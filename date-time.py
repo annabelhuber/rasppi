@@ -1,4 +1,3 @@
-#pip install holidays
 import datetime
 from datetime import date, time
 import holidays
@@ -107,6 +106,7 @@ def get_age_suffix(age):
 
 
 def main():
+
     now = datetime.datetime.now()
 
     formatted_date = now.strftime("%Y, %m, %d")
@@ -155,3 +155,12 @@ def main():
 if __name__ == "__main__":
 
     print(main())
+    
+    #first: install holidays
+    ##pip install holidays
+
+    #to schedule:
+    #bash: crontab -e (if prompted, choose 1 to open with nano text editor)
+    #scroll to very bottom of file and add this line:
+    #0 * * * * /usr/bin/python3 {absolute path to script}
+    #Save and exit (Press Ctrl+O, Enter, then Ctrl+X to quit nano)
