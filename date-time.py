@@ -4,6 +4,18 @@ from datetime import date, time
 import holidays
 import birthday_list
 
+now = datetime.datetime.now()
+us_holidays = holidays.US()
+
+formatted_date = now.strftime("%Y, %m, %d")
+year = int(now.strftime("%Y"))
+month = int(now.strftime("%m"))
+day = int(now.strftime("%d"))
+formatted_time = now.strftime("%H:%M:%S")
+
+birthdays = birthday_list.get_birthdays()
+
+
 def check_national_holidays():
     #checks if today is a US holiday
     if date(year,month,day) in us_holidays:
@@ -15,10 +27,8 @@ def check_birthdays():
     #checks if today is anyone's birthday
     for name, bday in birthdays.items():
         if (bday.month, bday.day) == (month, day):
-            if bday.year >= 1990:
-                age = year - bday.year
-                return name, age
-            return name, _
+            age = year - bday.year
+            return name, age
     return False
 
 def check_time():
@@ -39,33 +49,35 @@ def check_time():
         return "Night"
 
 def get_age_suffix(age):
-    if 
+    remainder = age % 10
+    if remainder == 1:
+        return "st"
+    if remainder == 2:
+        return "nd"
+    if remainder == 3:
+        return "rd"
+    else:
+        return "th"
 
 
 def main():
-    now = datetime.datetime.now()
-    us_holidays = holidays.US()
-
-    formatted_date = now.strftime("%Y, %m, %d")
-    year = int(now.strftime("%Y"))
-    month = int(now.strftime("%m"))
-    day = int(now.strftime("%d"))
-    formatted_time = now.strftime("%H:%M:%S")
-
-    birthdays = birthday_list.get_birthdays()
 
     if check_birthdays():
         #check birthdays first
         name, age = check_birthdays()
-
-        if name = "Dad":
+        if name == "Dad":
             #check for dad's birthday
             print_str = "Happy Birthday, Dad!"
 
-        elif age:
+        elif age < 50:
             #check for birthdays with ages
-            print_str = "It's " + name + "'s " + age + "rd B-day!"
+            suffix = get_age_suffix(age)
+            print_str = "It's " + name + "'s " + str(age) + suffix + " B-day!"
 
+        else:
+            print_str = "It's " + name + "'s B-day!"
+        
+        return print_str
 
     elif check_national_holidays():
         #check national holidays second
@@ -76,4 +88,8 @@ def main():
 
         return print_str
     
+    else:
+        print_str = "Good " + check_time() + ", Dad"
+        return print_str
     
+print(main())

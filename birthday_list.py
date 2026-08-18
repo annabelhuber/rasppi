@@ -8,7 +8,7 @@ def get_birthdays():
     "Mandy": date(1965,5,14),
     "Kerri": date(1975,11,14),
     "Meme": date(1945,8,11),
-    "Dummy": date(2005, 8,18)
+    "Dummy": date(2003, 8,19)
     }
 
     return birthdays
