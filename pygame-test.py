@@ -5,14 +5,12 @@ from luma.core.virtual import viewport
 from luma.emulator.device import pygame
 from luma.core.legacy import text
 from luma.core.legacy.font import CP437_FONT, TINY_FONT, SINCLAIR_FONT, LCD_FONT, proportional
+from datetime import date, datetime
 import time
 
-import dateTime as dt
+import date_time_messages as dt
 import birthday_list 
-
-birthdays = birthday_list.get_birthdays()
-
-#pygame.init()
+import holidays
 
 
 def main():
@@ -20,7 +18,8 @@ def main():
 
     device = pygame(width=mx_width, height=mx_height, rotate=0, mode="1", scale=8, transform="identity")
 
-    print_str= dt.return_text(2026,1,25)
+    print_str= dt.return_text(2026,11,26)
+
     if len(print_str) > 25:
         my_font = TINY_FONT
     else:
@@ -30,21 +29,56 @@ def main():
 
     try:
         while True:
-                # 2. Use the canvas context manager to draw frames
-            with canvas(device) as draw:
-                    # Clear the background
-                #draw.rectangle(device.bounding_box, fill="black")
-                    
-                    # Draw a test rectangle boundary
-                #draw.rectangle((5, 5, 58, 58), outline="blue")
-                #print_str= dt.return_text(2026,8,20)    
-                    # Draw test text
-                draw.rectangle(device.bounding_box, fill="black")
-                text(draw,(0, 0), print_str, fill="white", font=proportional(my_font))
-                #draw.text((18, 36), "MATRIX", fill="green")
+            if len(print_str) < 32:
+                with canvas(device) as draw:
+    
+                    draw.rectangle(device.bounding_box, fill="black")
+                    text(draw,(0, 0), print_str, fill="white", font=proportional(my_font))
+                time.sleep(0.1)
 
-                # 3. Regulate the frame rate
-            time.sleep(0.1)
+            else:
+                #get current time/date
+                now = datetime.now()
+                formatted_date = now.strftime("%Y, %m, %d")
+                # year=int(now.strftime("%Y"))
+                # month=int(now.strftime("%m"))
+                # day=int(now.strftime("%d"))
+                year=int(2026)
+                month=int(11)
+                day=int(26)
+
+                #set holidays and birthday lists
+                birthdays = birthday_list.get_birthdays()
+                us_holidays = holidays.US(years=year)
+
+                #split into 2 strings
+                first_str = dt.birthday_return_str(birthdays,year,month,day)
+                second_str = dt.holidays_return_str(us_holidays,year,month,day)
+
+                #get start time and start by displaying first string
+                start_time = time.time()
+                show_first_half = True
+
+                while True:
+                    # 2. Check if 10 seconds have elapsed
+                    current_time = time.time()
+
+                    if current_time - start_time >= 10.0:
+                        show_first_half = not show_first_half  # Toggle the boolean state
+                        start_time = current_time              # Reset the baseline timer
+            
+                    # 3. Choose which half to print based on the toggle state
+                    current_display_text = first_str if show_first_half else second_str
+
+                    with canvas(device) as draw:
+                        draw.rectangle(device.bounding_box, fill="black")
+                            
+                        # Render the current static slice at coordinates (0, 1)
+                        text(draw, (0, 1), current_display_text, fill="white", font=TINY_FONT)
+
+                    # Keep a low sleep interval so the 10-second timer check is responsive
+            
+                    time.sleep(0.1)
 
     except KeyboardInterrupt:
         pass
