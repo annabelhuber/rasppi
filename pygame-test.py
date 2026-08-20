@@ -6,96 +6,181 @@ from luma.emulator.device import pygame
 from luma.core.legacy import text, textsize
 from luma.core.legacy.font import CP437_FONT, TINY_FONT, SINCLAIR_FONT, LCD_FONT, proportional
 from datetime import date, datetime
+from PIL import Image, ImageDraw
 import time
 
 import date_time_messages as dt
 import birthday_list 
 import holidays
 
+def build_image(print_str):
+    #print_str= dt.return_text()
+    #split the phrase into 2
+    midpoint = len(print_str) // 2
+    space_indices = [i for i, char in enumerate(print_str) if char == " "]
 
-def main():
-    mx_width, mx_height = 128, 8
+    if space_indices:
+        closest_space = min(space_indices, key=lambda x: abs(x - midpoint))
 
-    device = pygame(width=mx_width, height=mx_height, rotate=0, mode="1", scale=8, transform="identity")
+        print_str1 = print_str[:closest_space]
+        print_str2 = print_str[closest_space + 1:]
 
-    print_str= dt.return_text(2026,10,31)
-
-    if len(print_str) > 23:
+    if len(print_str1) > 11:
+        my_font = TINY_FONT
+    elif len(print_str2) > 11:
         my_font = TINY_FONT
     else:
         my_font = SINCLAIR_FONT
-    #msg_width = len(print_str*6)
-    #virtual = viewport(device, width=msg_width + 64, height=8)
+    
+    img = Image.new("1", (64,16))
+    draw = ImageDraw.Draw(img)
+    #get dimensions of text
+    text_width1, text_height1 = textsize(print_str1, font=proportional(my_font))
+    text_width2, text_height2 = textsize(print_str2, font=proportional(my_font))
+    #get center coords
+    x1 = (64/2 - text_width1) // 2
+    y1 = (8/2 - text_height1) // 2
 
-    try:
-        while True:
-            if len(print_str) < 32:
-                with canvas(device) as draw:
-                    #get dimensions of text
-                    text_width, text_height = textsize(print_str, font=proportional(my_font))
+    x2 = (64+64/2 - text_width2) // 2
+    y2 = (8/2 - text_height2) // 2
 
-                    #get center coords
-                    x = (device.width - text_width) // 2
-                    y = (device.height - text_height) // 2
+    text(draw,(0,0), print_str1, fill="white", font=proportional(my_font))
+    text(draw,(0,8), print_str2, fill="white", font=proportional(my_font))
 
-                    text(draw,(x,y), print_str, fill="white", font=proportional(my_font))
-                time.sleep(1)
+    return img
 
-            else:
-                #get current time/date
-                now = datetime.now()
-                formatted_date = now.strftime("%Y, %m, %d")
-                year=int(now.strftime("%Y"))
-                month=int(now.strftime("%m"))
-                day=int(now.strftime("%d"))
+def map_to_chain(image):
+    raw = Image.new("1", (128,8))
 
-                #set holidays and birthday lists
-                birthdays = birthday_list.get_birthdays()
-                us_holidays = holidays.US(years=year)
+    board1 = image.crop((0,0,32,8))
+    raw.paste(board1, (0,0))
 
-                #split into 2 strings
-                first_str = dt.birthday_return_str(birthdays,year,month,day)
-                second_str = dt.holidays_return_str(us_holidays,year,month,day)
+    board2 - image.crop((32,0,64,8))
+    raw.paste(board2, (32,0))
 
-                #get start time and start by displaying first string
-                start_time = time.time()
-                show_first_half = True
+    board3 = image.crop((32,8,64,16)).rotate(180)
+    raw.paste(board3, (64,0))
 
-                while True:
-                    # 2. Check if 10 seconds have elapsed
-                    current_time = time.time()
+    board4 = image.crop((0,8,32,16)).rotate(180)
+    raw.paste(board4, (96,0))
 
-                    if current_time - start_time >= 10.0:
-                        show_first_half = not show_first_half  # Toggle the boolean state
-                        start_time = current_time              # Reset the baseline timer
+    return raw
+
+def simulate_image(print_str, scale=10):
+    device = pygame(
+        width=64,
+        height=16,
+        rotate=0,
+        mode="1",
+        scale=scale,
+        transform="identity",
+    )
+ 
+    logical = build_image(print_str)
+    device.display(logical)
+ 
+    import time
+    time.sleep(10)
+
+# def main():
+#     mx_width, mx_height = 128, 8
+
+#     device = pygame(width=mx_width, height=mx_height, rotate=0, mode="1", scale=8, transform="identity")
+#     #device_bottom = pygame(width=mx_width, height=mx_height, rotate=0, mode="1", scale=8, transform="identity")
+
+#     print_str= dt.return_text()
+#     #split the phrase into 2
+#     midpoint = len(print_str) // 2
+#     space_indices = [i for i, char in enumerate(print_str) if char == " "]
+
+#     if space_indices:
+#         closest_space = min(space_indices, key=lambda x: abs(x - midpoint))
+
+#         print_str1 = print_str[:closest_space]
+#         print_str2 = print_str[closest_space + 1:]
+
+#     if len(print_str) > 23:
+#         my_font = TINY_FONT
+#     else:
+#         my_font = SINCLAIR_FONT
+
+#     try:
+#         while True:
+#             if len(print_str) < 32:
+#                 with canvas(device) as draw:
+#                     #get dimensions of text
+#                     text_width1, text_height1 = textsize(print_str1, font=proportional(my_font))
+#                     text_width2, text_height2 = textsize(print_str2, font=proportional(my_font))
+#                     #get center coords
+#                     x1 = (device.width/2 - text_width1) // 2
+#                     y1 = (device.height/2 - text_height1) // 2
+
+#                     x2 = (device.width/2 - text_width2) // 2
+#                     y2 = (device.height/2 - text_height2) // 2
+
+#                     text(draw,(x1,y1), print_str1, fill="white", font=proportional(my_font))
+#                     text(draw,(x2,y2), print_str2, fill="white", font=proportional(my_font), rotate=2)
+
+#                 time.sleep(1)
+
+#             else:
+#                 #get current time/date
+#                 now = datetime.now()
+#                 formatted_date = now.strftime("%Y, %m, %d")
+#                 year=int(now.strftime("%Y"))
+#                 month=int(now.strftime("%m"))
+#                 day=int(now.strftime("%d"))
+
+#                 #set holidays and birthday lists
+#                 birthdays = birthday_list.get_birthdays()
+#                 us_holidays = holidays.US(years=year)
+
+#                 #split into 2 strings
+#                 first_str = dt.birthday_return_str(birthdays,year,month,day)
+#                 second_str = dt.holidays_return_str(us_holidays,year,month,day)
+
+#                 #get start time and start by displaying first string
+#                 start_time = time.time()
+#                 show_first_half = True
+
+#                 while True:
+#                     # 2. Check if 10 seconds have elapsed
+#                     current_time = time.time()
+
+#                     if current_time - start_time >= 10.0:
+#                         show_first_half = not show_first_half  # Toggle the boolean state
+#                         start_time = current_time              # Reset the baseline timer
             
-                    # 3. Choose which half to print based on the toggle state
-                    current_display_text = first_str if show_first_half else second_str
+#                     # 3. Choose which half to print based on the toggle state
+#                     current_display_text = first_str if show_first_half else second_str
 
-                    with canvas(device) as draw:
-                        #center text
-                        text_width, text_height = textsize(current_display_text, font=proportional(my_font))
-                        x = (device.width - text_width) // 2
-                        y = (device.height - text_height) // 2
-                        #set font size based on string size
-                        if len(current_display_text) > 23:
-                            my_font = TINY_FONT
-                        else:
-                            my_font = SINCLAIR_FONT
+#                     with canvas(device) as draw:
+#                         #center text
+#                         text_width, text_height = textsize(current_display_text, font=proportional(my_font))
+#                         x = (device.width - text_width) // 2
+#                         y = (device.height - text_height) // 2
+#                         #set font size based on string size
+#                         if len(current_display_text) > 23:
+#                             my_font = TINY_FONT
+#                         else:
+#                             my_font = SINCLAIR_FONT
 
-                        # Render the current static slice at coordinates (0, 1)
-                        text(draw, (x,y), current_display_text, fill="white", font=proportional(my_font))
+#                         # Render the current static slice at coordinates (0, 1)
+#                         text(draw, (x,y), current_display_text, fill="white", font=proportional(my_font))
 
-                    # Keep a low sleep interval so the 10-second timer check is responsive
+#                     # Keep a low sleep interval so the 10-second timer check is responsive
             
-                    time.sleep(0.1)
+#                     time.sleep(0.1)
 
-    except KeyboardInterrupt:
-        pass
+#     except KeyboardInterrupt:
+#         pass
 
 
 if __name__ == "__main__":
-    main()
+    line1 = "It's Annabel's 25th B-day!"
+
+    simulate_image(line1)
+
 # #ROWS, COLS = 8, 8
 # LED_SIZE = 40  # Size of each LED in pixels
 # LED_GAP = 6  # Space between LEDs
