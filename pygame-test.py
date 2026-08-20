@@ -82,6 +82,24 @@ def simulate_image(print_str, scale=10):
     import time
     time.sleep(10)
 
+def run_on_hardware(print_str, block_orientation=-90, blocks_arranged_in_reverse_order=False):
+    from luma.led_matrix.device import max7219
+    from luma.core.interface.serial import spi, noop
+ 
+    serial = spi(port=0, device=0, gpio=noop())
+    device = max7219(
+        serial,
+        cascaded=16,  # 4 boards x 4 modules each
+        block_orientation=block_orientation,
+        rotate=0,
+        blocks_arranged_in_reverse_order=blocks_arranged_in_reverse_order,
+    )
+ 
+    logical = build_logical_image(print_str)
+    raw = remap_to_chain(logical)
+    device.display(raw)
+
+
 # def main():
 #     mx_width, mx_height = 128, 8
 
