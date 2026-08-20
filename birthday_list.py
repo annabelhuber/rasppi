@@ -10,7 +10,7 @@ def get_birthdays():
     "Meme": date(1945,8,11),
     "Emma": date(2001,11,26),
     "Boden": date(2003,7,3),
-    "Dummy": date(2003, 8,19)
+    "Casanova": date(2008,9,14)
     }
 
     return birthdays

@@ -18,9 +18,9 @@ def main():
 
     device = pygame(width=mx_width, height=mx_height, rotate=0, mode="1", scale=8, transform="identity")
 
-    print_str= dt.return_text(2026,11,26)
+    print_str= dt.return_text(2026,1,19)
 
-    if len(print_str) > 25:
+    if len(print_str) > 23:
         my_font = TINY_FONT
     else:
         my_font = SINCLAIR_FONT
@@ -44,9 +44,9 @@ def main():
                 month=int(now.strftime("%m"))
                 day=int(now.strftime("%d"))
 
-                year=int(2026)
-                month=int(11)
-                day=int(26)
+                # year=int(2026)
+                # month=int(9)
+                # day=int(14)
                 #set holidays and birthday lists
                 birthdays = birthday_list.get_birthdays()
                 us_holidays = holidays.US(years=year)
@@ -74,7 +74,7 @@ def main():
                         draw.rectangle(device.bounding_box, fill="black")
                             
                         #set font size based on string size
-                        if len(current_display_text) > 25:
+                        if len(current_display_text) > 23:
                             my_font = TINY_FONT
                         else:
                             my_font = SINCLAIR_FONT

@@ -22,19 +22,27 @@ def check_national_holidays(us_holidays, year,month,day):
         return us_holidays.get(curr_date)
     
     #add in some holidays not included
-    elif (curr_date) == (12,31):
+    elif (month,day) == (12,31):
         return "New Year's Eve"
-    elif (curr_date) == (12,24):
+    elif (month,day) == (12,24):
         return "Christmas Eve"
-    elif (curr_date) == (2,14):
+    elif (month,day) == (2,14):
         return "Valentine's Day"
-    elif (curr_date) == (3,17):
+    elif (month,day) == (3,17):
         return "St. Patrick's Day"
-    elif (curr_date) == (5,5):
+    elif (month,day) == (5,5):
         return "Cinco de Mayo"
-    elif (curr_date) == (10,31):
+    elif (month,day) == (10,31):
         return "Halloween"
-    
+    elif (month,day) == (3,14):
+        return "Pi Day"
+    elif (month,day) == (1,2):
+        return "Sci-Fi Day"
+    elif (month,day) == (4,1):
+        return "April Fool's Day"
+    elif (month,day) == (11,23):
+        return "Fibonacci Day"
+
     #holidays that change year to year (easter, mother's day, father's day)
     elif year == 2027:
         if (month,day) == (3,28):
@@ -43,6 +51,8 @@ def check_national_holidays(us_holidays, year,month,day):
             "Father's Day"
         elif (month,day) == (5,9):
             "Mother's Day"
+        elif (month,day) == (8,4):
+            "Engineer's Day"
 
     elif year == 2028:
         if (month,day) == (4,16):
@@ -51,6 +61,8 @@ def check_national_holidays(us_holidays, year,month,day):
             "Father's Day"
         elif (month,day) == (5,14):
             "Mother's Day"
+        elif (month,day) == (8,2):
+            "Engineer's Day"
 
     elif year == 2029:
         if (month,day) == (4,1):
@@ -59,6 +71,8 @@ def check_national_holidays(us_holidays, year,month,day):
             "Father's Day"
         elif (month,day) == (5,13):
             "Mother's Day"
+        elif (month,day) == (8,1):
+            "Engineer's Day"
 
     elif year == 2030:
         if (month,day) == (4,21):
@@ -67,6 +81,8 @@ def check_national_holidays(us_holidays, year,month,day):
             "Father's Day"
         elif (month,day) == (5,12):
             "Mother's Day"
+        elif (month,day) == (8,7):
+            "Engineer's Day"
 
     else:
         return False
