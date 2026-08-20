@@ -73,8 +73,10 @@ def main():
                     current_display_text = first_str if show_first_half else second_str
 
                     with canvas(device) as draw:
-                        draw.rectangle(device.bounding_box, fill="black")
-                            
+                        #center text
+                        text_width, text_height = textsize(current_display_text, font=proportional(my_font))
+                        x = (device.width - text_width) // 2
+                        y = (device.height - text_height) // 2
                         #set font size based on string size
                         if len(current_display_text) > 23:
                             my_font = TINY_FONT
@@ -82,11 +84,11 @@ def main():
                             my_font = SINCLAIR_FONT
 
                         # Render the current static slice at coordinates (0, 1)
-                        text(draw, (0, 1), current_display_text, fill="white", font=proportional(my_font))
+                        text(draw, (x,y), current_display_text, fill="white", font=proportional(my_font))
 
                     # Keep a low sleep interval so the 10-second timer check is responsive
             
-                    time.sleep(1)
+                    time.sleep(0.1)
 
     except KeyboardInterrupt:
         pass
