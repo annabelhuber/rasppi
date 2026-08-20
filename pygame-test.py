@@ -18,7 +18,7 @@ def main():
 
     device = pygame(width=mx_width, height=mx_height, rotate=0, mode="1", scale=8, transform="identity")
 
-    print_str= dt.return_text(2026,11,14)
+    print_str= dt.return_text(2026,11,26)
 
     if len(print_str) > 25:
         my_font = TINY_FONT
@@ -46,7 +46,7 @@ def main():
 
                 year=int(2026)
                 month=int(11)
-                day=int(14)
+                day=int(26)
                 #set holidays and birthday lists
                 birthdays = birthday_list.get_birthdays()
                 us_holidays = holidays.US(years=year)
@@ -80,7 +80,7 @@ def main():
                             my_font = SINCLAIR_FONT
 
                         # Render the current static slice at coordinates (0, 1)
-                        text(draw, (0, 1), current_display_text, fill="white", font=my_font)
+                        text(draw, (0, 1), current_display_text, fill="white", font=proportional(my_font))
 
                     # Keep a low sleep interval so the 10-second timer check is responsive
             
