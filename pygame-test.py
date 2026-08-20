@@ -40,12 +40,9 @@ def main():
                 #get current time/date
                 now = datetime.now()
                 formatted_date = now.strftime("%Y, %m, %d")
-                # year=int(now.strftime("%Y"))
-                # month=int(now.strftime("%m"))
-                # day=int(now.strftime("%d"))
-                year=int(2026)
-                month=int(11)
-                day=int(26)
+                year=int(now.strftime("%Y"))
+                month=int(now.strftime("%m"))
+                day=int(now.strftime("%d"))
 
                 #set holidays and birthday lists
                 birthdays = birthday_list.get_birthdays()
@@ -73,8 +70,14 @@ def main():
                     with canvas(device) as draw:
                         draw.rectangle(device.bounding_box, fill="black")
                             
+                        #set font size based on string size
+                        if len(current_display_text) > 25:
+                            my_font = TINY_FONT
+                        else:
+                            my_font = SINCLAIR_FONT
+
                         # Render the current static slice at coordinates (0, 1)
-                        text(draw, (0, 1), current_display_text, fill="white", font=TINY_FONT)
+                        text(draw, (0, 1), current_display_text, fill="white", font=my_font)
 
                     # Keep a low sleep interval so the 10-second timer check is responsive
             
