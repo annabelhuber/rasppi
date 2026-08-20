@@ -206,13 +206,9 @@ def return_text(year=None,month=None,day=None):
 
 
 if __name__ == "__main__":
-    #us_holidays = holidays.US()
-    #print(us_holidays.get(2026,1,25))
-    #print(check_national_holidays2(us_holidays,2027,11,25))
     print(return_text())
     
-    #first: install holidays
-    ##pip install holidays
+    #first: install holidays and other packages
 
     #to schedule:
     #bash: crontab -e (if prompted, choose 1 to open with nano text editor)

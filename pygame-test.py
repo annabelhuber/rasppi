@@ -18,7 +18,7 @@ def main():
 
     device = pygame(width=mx_width, height=mx_height, rotate=0, mode="1", scale=8, transform="identity")
 
-    print_str= dt.return_text(2026,1,19)
+    print_str= dt.return_text()
 
     if len(print_str) > 23:
         my_font = TINY_FONT
