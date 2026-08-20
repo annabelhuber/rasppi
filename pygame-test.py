@@ -3,7 +3,7 @@ import numpy as np
 from luma.core.render import canvas
 from luma.core.virtual import viewport
 from luma.emulator.device import pygame
-from luma.core.legacy import text
+from luma.core.legacy import text, textsize
 from luma.core.legacy.font import CP437_FONT, TINY_FONT, SINCLAIR_FONT, LCD_FONT, proportional
 from datetime import date, datetime
 import time
@@ -31,10 +31,15 @@ def main():
         while True:
             if len(print_str) < 32:
                 with canvas(device) as draw:
-    
-                    draw.rectangle(device.bounding_box, fill="black")
-                    text(draw,(0, 0), print_str, fill="white", font=proportional(my_font))
-                time.sleep(0.1)
+                    #get dimensions of text
+                    text_width, text_height = textsize(print_str, font=proportional(my_font))
+
+                    #get center coords
+                    x = (device.width - text_width) // 2
+                    y = (device.height - text_height) // 2
+
+                    text(draw,(x,y), print_str, fill="white", font=proportional(my_font))
+                time.sleep(1)
 
             else:
                 #get current time/date
@@ -44,9 +49,6 @@ def main():
                 month=int(now.strftime("%m"))
                 day=int(now.strftime("%d"))
 
-                # year=int(2026)
-                # month=int(9)
-                # day=int(14)
                 #set holidays and birthday lists
                 birthdays = birthday_list.get_birthdays()
                 us_holidays = holidays.US(years=year)
@@ -84,7 +86,7 @@ def main():
 
                     # Keep a low sleep interval so the 10-second timer check is responsive
             
-                    time.sleep(0.1)
+                    time.sleep(1)
 
     except KeyboardInterrupt:
         pass
