@@ -5,33 +5,34 @@ import birthday_list
 
 
 def check_national_holidays(us_holidays, year,month,day):
+    curr_date=date(year,month,day)
     #checks if today is a US holiday
     if date(year,month,day) in us_holidays:
         #rename some of the holidays to shortened versions
 
-        if us_holidays.get(year,month,day) == "Martin Luther King Jr. Day":
+        if us_holidays.get(curr_date) == "Martin Luther King Jr. Day":
             return "MLK Jr. Day"
-        elif us_holidays.get(year,month,day) == "Juneteenth National Independence Day":
+        elif us_holidays.get(curr_date) == "Juneteenth National Independence Day":
             return "Juneteenth"
-        elif us_holidays.get(year,month,day) == "Washington's Birthday":
+        elif us_holidays.get(curr_date) == "Washington's Birthday":
             return "President's Day"
-        elif us_holidays.get(year,month,day) == "Independence Day (observed)":
+        elif us_holidays.get(curr_date) == "Independence Day (observed)":
             return False
         
-        return us_holidays.get(year,month,day)
+        return us_holidays.get(curr_date)
     
     #add in some holidays not included
-    elif (month,day) == (12,31):
+    elif (curr_date) == (12,31):
         return "New Year's Eve"
-    elif (month,day) == (12,24):
+    elif (curr_date) == (12,24):
         return "Christmas Eve"
-    elif (month,day) == (2,14):
+    elif (curr_date) == (2,14):
         return "Valentine's Day"
-    elif (month,day) == (3,17):
+    elif (curr_date) == (3,17):
         return "St. Patrick's Day"
-    elif (month,day) == (5,5):
+    elif (curr_date) == (5,5):
         return "Cinco de Mayo"
-    elif (month,day) == (10,31):
+    elif (curr_date) == (10,31):
         return "Halloween"
     
     #holidays that change year to year (easter, mother's day, father's day)
@@ -69,8 +70,9 @@ def check_national_holidays(us_holidays, year,month,day):
 
     else:
         return False
+    
 
-def check_birthdays(birthdays,year,month,day):
+def check_birthdays(birthdays,year,month,day) -> str:
     #checks if today is anyone's birthday
     for name, bday in birthdays.items():
         if (bday.month, bday.day) == (month, day):
@@ -78,20 +80,20 @@ def check_birthdays(birthdays,year,month,day):
             return name, age
     return False
 
-def check_time(now):
+def check_time(now) -> str:
     if now.time() >= time(5,0,0) and now.time() < time(12,0,0):
         #between 5am and noon
         return "Morning"
 
-    elif now.time() >= time(12,0,0) and now.time() < time(5,0,0):
+    elif now.time() >= time(12,0,0) and now.time() < time(17,0,0):
         #between noon and 5pm
         return "Afternoon"
 
-    elif now.time() >= time(5,0,0) and now.time() < time(9,0,0):
+    elif now.time() >= time(17,0,0) and now.time() < time(21,0,0):
         #between 5pm and 9pm
         return "Evening"
     
-    elif now.time() >= time(9,0,0) and now.time() < time(5,0,0):
+    else:
         #between 9pm and 5am
         return "Night"
 
@@ -107,14 +109,20 @@ def get_age_suffix(age):
         return "th"
 
 
-def main():
+def return_text(year=None,month=None,day=None):
 
     now = datetime.datetime.now()
 
     formatted_date = now.strftime("%Y, %m, %d")
-    year = int(now.strftime("%Y"))
-    month = int(now.strftime("%m"))
-    day = int(now.strftime("%d"))
+    # year = int(now.strftime("%Y"))
+    # month = int(now.strftime("%m"))
+    # day = int(now.strftime("%d"))
+    if not year:
+        year=2027
+    if not month:
+        month=11
+    if not day:
+        day=25
     formatted_time = now.strftime("%H:%M:%S")
 
     birthdays = birthday_list.get_birthdays()
@@ -123,6 +131,7 @@ def main():
    
 
     if check_birthdays(birthdays, year,month,day):
+        print_str = ""
         #check birthdays first
         name, age = check_birthdays(birthdays, year,month,day)
         if name == "Dad":
@@ -149,14 +158,17 @@ def main():
         return print_str
     
     else:
-        print_str = "Good " + check_time(now) + ", Dad"
+        time_of_day = check_time(now)
+        print_str = "Good " + time_of_day + ", Dad"
         return print_str
     
 
 
 if __name__ == "__main__":
-
-    print(main())
+    #us_holidays = holidays.US()
+    #print(us_holidays.get(2026,1,25))
+    #print(check_national_holidays2(us_holidays,2027,11,25))
+    print(return_text())
     
     #first: install holidays
     ##pip install holidays
